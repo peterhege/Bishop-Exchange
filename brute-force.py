@@ -69,7 +69,20 @@ def is_knock( pos, state, bishop ):
     return False
 
 
-def applicable_operators( state ):
+def heuristics( state ):
+    '''Heuristic function'''
+    h = 0
+    for i in range( 8 ):
+        if is_white( i ):
+            h += 5 - state[0][i]
+        else:
+            h += state[0][i] - 1
+
+    return h
+
+
+
+def applicable_operators( state, mode ):
     '''Return to the applicable operators'''
     operators = {}
 
@@ -83,18 +96,24 @@ def applicable_operators( state ):
             for j in range( 1, 4 ):         # 3 step (max) = 96 operators
                 new_pos = ( pos[0] + v[k] * j, pos[1] + w[k] * j ) # possible position
 
-                if not is_exist( new_pos ):
-                    continue
-
                 if not is_free( new_pos, state, i ):
                     break # If position is not free, then it cannot be crossed
 
-                if is_knock( new_pos, state, i ):
+                if not is_exist( new_pos ) or is_knock( new_pos, state, i ):
                     continue
+
+                if mode == 2:
+                    h = heuristics( use( state, ( i, new_pos[0], new_pos[1] ) ) )
+                    if h > heuristics( state ):
+                        continue
 
                 if i not in operators:
                     operators[i] = []
-                operators[i].append( new_pos )
+
+                if mode == 2:
+                    operators[i].append( ( new_pos[0], new_pos[1], h ) )
+                else:
+                    operators[i].append( new_pos )
 
     return operators
 
@@ -150,7 +169,15 @@ def choose_random( operators ):
 
 def choose_heuristics( operators ):
     '''Choose with heuristics'''
-    pass
+    h = 4 * 4 * 2 + 1
+
+    for bishop, li in operators.items():
+        for data in li:
+            if data[2] < h:
+                operator = ( bishop, data[0], data[1] )
+                h = data[2]
+
+    return operator
 
 
 def choose_mode():
@@ -181,10 +208,12 @@ def choose( operators, mode ):
 
 def use( state, operator ):
     '''Use selected operator'''
-    state[0][ operator[0] ] = operator[1]
-    state[1][ operator[0] ] = operator[2]
+    new_state = [ state[0][:], state[1][:] ]
 
-    return state
+    new_state[0][ operator[0] ] = operator[1]
+    new_state[1][ operator[0] ] = operator[2]
+
+    return [ new_state[0][:], new_state[1][:] ]
 
 
 def brute_force_search():
@@ -199,7 +228,7 @@ def brute_force_search():
         if actual[0] == GOAL_ROW:
             break
 
-        O = applicable_operators( actual )
+        O = applicable_operators( actual, mode )
         if len( O ) != 0:
             o = choose( O, mode )
             actual = use( actual, o )
