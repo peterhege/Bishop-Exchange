@@ -6,3 +6,5 @@ Adott egy 5×4-es sakktábla, melynek alsó sorában sötét futók, felső sor�
 az ábrán látható.
 
 ![bishop table](bishop.jpg "Bishop table")
+
+[Szabályos sakklépésekkel](https://en.wikipedia.org/wiki/Bishop_(chess)#Movement) cseréljük fel a világos futókat a sötétekkel.
