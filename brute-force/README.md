@@ -10,7 +10,7 @@ Az alkalmazható operátorok közül választhatunk.
 
 ##### Teljesség
 
-Teljes, mivel mindig van lehetőségünk visszalépni, ezért a keresés nem lesz sikertelen. Véges sok lépésben megtalálható egy célállapot.
+Véges sok lépésben megtalálható egy célállapot. A keresés semmilyen esetben sem sikertelen, mivel mindig van lehetőség a visszalépésre.
 
 ### Véletlenszerű
 
@@ -18,7 +18,9 @@ Az algoritmus a választható operátorok közül véletlenszerűen választ egy
 
 ##### Teljesség
 
-Teljes, mivel mindig van lehetőség visszalépni, ezért véges sok lépésben megtalál egy célállapotot.
+A keresés semmilyen esetben sem sikertelen, mivel mindig van lehetőség a visszalépésre, így
+- Véges sok lépésben megtalál egy célállapotot
+- A végtelenségig fut ( tesztelés során még nem fordult elő )
 
 ### Hegymászó módszer
 
@@ -28,4 +30,5 @@ Minden futó cél sorától vett távolságának összege.
 
 ##### Teljesség
 
-Sajnos ez a keresés sikertelen, mert megáll egy olyan állapotban, ahol minden operátor - melyek teljesítik az alkalmazási előfeltételeket - alkalmazásának heurisztikája nagyobb, mint az állapot heurisztikája, melyben megáll az algoritmus.
+Sajnos ez a keresés sikertelen, mert megáll egy olyan állapotban, ahol már nincs több alkalmazható operátor.
+Egy operátor alkalmazásának heurisztikája nagyobb, mint az állapot heurisztikája, minden operátorra, melyek teljesítik az alkalmazási előfeltételeket.
