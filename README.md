@@ -9,7 +9,7 @@ az ábrán látható.
 
 [Szabályos sakklépésekkel](https://en.wikipedia.org/wiki/Bishop_(chess)#Movement) cseréljük fel a világos futókat a sötétekkel.
 
-Forrás: [Kósa Márk - Feladatgyűjtemény a Mesterséges intelligencia 1 című tantárgyhoz](https://arato.inf.unideb.hu/kosa.mark/mestint/feladatsor.pdf)
+Forrás: [Kósa Márk - Feladatgyűjtemény a Mesterséges intelligencia 1 című tantárgyhoz](https://arato.inf.unideb.hu/kosa.mark/mestint/feladatsor.pdf) 3.o / 4. feladat
 
 ## Állapottér reprezentáció
 
