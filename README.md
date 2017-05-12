@@ -17,7 +17,7 @@ Részletesen: [bishop-exchange.pdf](docs/bishop-exchange.pdf)
 
 ### Nem módosítható kereső
 
-[brute-force.py](brute-force.py)
+[brute-force](brute-force/)
 
 Operátor választás módja:
 
