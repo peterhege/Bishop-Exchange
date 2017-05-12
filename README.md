@@ -9,11 +9,15 @@ az ábrán látható.
 
 [Szabályos sakklépésekkel](https://en.wikipedia.org/wiki/Bishop_(chess)#Movement) cseréljük fel a világos futókat a sötétekkel.
 
+## Állapottér reprezentáció
+
+Részletesen: [bishop-exchange.pdf](docs/bishop-exchange.pdf)
+
 ## Keresők
 
 ### Nem módosítható kereső
 
-brute-force.py
+[brute-force.py](brute-force.py)
 
 Operátor választás módja:
 
