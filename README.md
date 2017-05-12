@@ -8,3 +8,15 @@ az ábrán látható.
 ![bishop table](bishop.jpg "Bishop table")
 
 [Szabályos sakklépésekkel](https://en.wikipedia.org/wiki/Bishop_(chess)#Movement) cseréljük fel a világos futókat a sötétekkel.
+
+## Keresők
+
+### Nem módosítható kereső
+
+brute-force.py
+
+Operátor választás módja:
+
+- Billentyűzetről
+- Véletlenszerűen
+- Hegymászó módszerrel
