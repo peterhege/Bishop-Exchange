@@ -26,9 +26,11 @@ A keresés semmilyen esetben sem sikertelen, mivel mindig van lehetőség a viss
 
 ##### Heurisztika
 
-Minden futó cél sorától vett távolságának összege.
+- Minden futó cél sorától vett távolságának összege.
+- Minden futóra nézve a következők összege: ha a kezdő pozícióban van: 2, ha nincs a helyén: 1, ha a helyén van: 0.
+- Ezek összege
 
 ##### Teljesség
 
-Sajnos ez a keresés sikertelen, mert megáll egy olyan állapotban, ahol már nincs több alkalmazható operátor.
+Sajnos mindhárom heurisztika esetén a keresés sikertelen, mert megáll egy olyan állapotban, ahol már nincs több alkalmazható operátor.
 Egy operátor alkalmazásának heurisztikája nagyobb, mint az állapot heurisztikája, minden operátorra, melyek teljesítik az alkalmazási előfeltételeket.

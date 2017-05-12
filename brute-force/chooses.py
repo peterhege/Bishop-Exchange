@@ -5,6 +5,27 @@ from check import is_white
 
 def heuristics( state ):
     '''Heuristic function'''
+    return heuristics_distance( state ) + heuristics_wrong( state )
+
+
+def heuristics_wrong( state ):
+    h = 0
+    for i in range( 8 ):
+        if is_white( i ):
+            if state[0][i] == 1:
+                h += 2
+            if state[0][i] != 5:
+                h += 1
+        else:
+            if state[0][i] == 5:
+                h += 2
+            if state[0][i] != 1:
+                h += 1
+
+    return h
+
+
+def heuristics_distance( state ):
     h = 0
     for i in range( 8 ):
         if is_white( i ):
@@ -66,11 +87,15 @@ def choose_random( operators ):
 
 def choose_heuristics( operators ):
     '''Choose with heuristics'''
-    h = 4 * 4 * 2 + 1
+    flag = True
 
     for bishop, li in operators.items():
         for data in li:
-            if data[2] < h:
+            if flag:
+                operator = ( bishop, data[0], data[1] )
+                h = data[2]
+                flag = False
+            elif data[2] < h:
                 operator = ( bishop, data[0], data[1] )
                 h = data[2]
 
