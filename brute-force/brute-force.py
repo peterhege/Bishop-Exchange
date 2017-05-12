@@ -27,9 +27,9 @@ def print_state( state ):
 
     for i in range( 8 ):
         if i < 4:
-            chess_board[ state[0][i] - 1 ][ state[1][i] - 1 ] = "{bishop}♝".format( bishop=i )
-        else:
             chess_board[ state[0][i] - 1 ][ state[1][i] - 1 ] = "{bishop}♗".format( bishop=i )
+        else:
+            chess_board[ state[0][i] - 1 ][ state[1][i] - 1 ] = "{bishop}♝".format( bishop=i )
 
     print( '\n  ', end=' ' )
     for i in range( 4 ):
