@@ -1,4 +1,4 @@
-# Nemmódosítható megoldáskereső rendszerek
+# Futócsere probléma, Nemmódosítható megoldáskereső rendszerei
 
 ## Operátor választásának módjai
 
