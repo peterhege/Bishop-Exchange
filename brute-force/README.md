@@ -51,4 +51,4 @@ Pontos heurisztikával csökkenthető
 
 ## Tárigény
 
-Mindhárom választás eseté a tárigény kicsi a Nemódosítható megoldáskereső rendszer algoritmusából adódóan.
+Mindhárom választás esetén a tárigény kicsi a Nemódosítható megoldáskereső rendszer algoritmusából adódóan.

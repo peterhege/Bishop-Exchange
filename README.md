@@ -9,15 +9,17 @@ az ábrán látható.
 
 [Szabályos sakklépésekkel](https://en.wikipedia.org/wiki/Bishop_(chess)#Movement) cseréljük fel a világos futókat a sötétekkel.
 
+Forrás: [Kósa Márk - Feladatgyűjtemény a Mesterséges intelligencia 1 című tantárgyhoz](https://arato.inf.unideb.hu/kosa.mark/mestint/feladatsor.pdf)
+
 ## Állapottér reprezentáció
 
 Részletesen: [bishop-exchange.pdf](docs/bishop-exchange.pdf)
 
-## Keresők
+## Megoldáskereső rendszerek
 
 ### Nem módosítható kereső
 
-[brute-force](brute-force/)
+Részletesebben: [brute-force](brute-force/)
 
 Operátor választás módja:
 
