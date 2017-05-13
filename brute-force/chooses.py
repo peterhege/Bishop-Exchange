@@ -3,35 +3,60 @@
 import random
 from check import is_white
 
-def heuristics( state ):
+
+def heuristic( state ):
     '''Heuristic function'''
-    return heuristics_distance( state ) + heuristics_wrong( state )
+    h = 0
+    h += heuristic_distance( state )
+    #h += heuristic_wrong( state )
+    #h += heuristic_distance2( state )
+    
+    return h
 
 
-def heuristics_wrong( state ):
+def heuristic_wrong( state ):
     h = 0
     for i in range( 8 ):
         if is_white( i ):
-            if state[0][i] == 1:
+            if state[i][0] == 1:
                 h += 2
-            if state[0][i] != 5:
+            if state[i][0] != 5:
                 h += 1
         else:
-            if state[0][i] == 5:
+            if state[i][0] == 5:
                 h += 2
-            if state[0][i] != 1:
+            if state[i][0] != 1:
                 h += 1
 
     return h
 
 
-def heuristics_distance( state ):
+def heuristic_distance( state ):
     h = 0
     for i in range( 8 ):
         if is_white( i ):
-            h += 5 - state[0][i]
+            h += 5 - state[i][0]
         else:
-            h += state[0][i] - 1
+            h += state[i][0] - 1
+
+    return h
+
+
+def heuristic_distance2( state ):
+    h = 0
+    whites_is_wrong = False
+
+    for i in range( 4 ):
+        if state[i] != 5:
+            whites_is_wrong = True
+            break
+
+    if whites_is_wrong:
+        for i in range( 4 ):
+            h += 5 - state[i][0]
+    else:
+        for i in range( 4, 8 ):
+            h += state[i][0] - 1
 
     return h
 
@@ -40,64 +65,41 @@ def choose_from_keyboard( operators ):
     '''Choose operator from keyboard'''
 
     # Opportunities
-    print( "{0:<8}{1}".format( "Futó", "Választható pozíciók" ) )
-    print( "-" * 40 )
-    for bishop, positions in operators.items():
-        print( "{0:<8}{1}".format( bishop, positions ) )
+    print( "{:^8}{:^11}".format( "Futó", "Pozíció" ) )
+    print( "-" * 19 )
+    for op in operators:
+        print( "{:^8}{:^11}".format( op[0], str( op[1] ) ) )
 
-    # Select bishop
     while True:
-        bishop = input( "\nKérem, adja meg a választani kívánt bábu sorszámát: " )
-        if not bishop.isdigit() or int( bishop ) not in operators:
-            print( "Hiba: Helytelen sorszám" )
-        else:
-            bishop = int( bishop )
+        op = input( "\nKérem, adjon meg egy operátort ( futó, pozíció 1, pozíció 1 ): ").replace(" ","").replace("(","").replace(")","").split(",")
+        
+        if len( op ) != 3:
+            continue
+
+        op = [ int(op[0]), ( int(op[1]), int(op[2]) ) ]
+
+        if op in operators:
             break
 
-    # Select position
-    while True:
-        pos = input( "\nKérem, adja meg hova lépjen a kiválasztott bábu: " ).replace(" ","").split(",")
+        print( "Hiba: a megadott operátor nincs a listán!" )
 
-        if len( pos ) != 2 or not pos[0].isdigit() or not pos[1].isdigit():
-            print( "Hiba: Helytelen pozíció" )
-        else:
-            row, column = int( pos[0] ), int( pos[1] )
-            if ( row, column ) not in operators[ bishop ]:
-                print( "Hiba: Helytelen pozíció" )
-            else:
-                break
-
-    return ( bishop, row, column )
+    return op
 
 
 def choose_random( operators ):
     '''Choose randomly in operators'''
-
-    # Select bishop
-    while True:
-        bishop = random.randint( 0, 7 )
-        if bishop in operators:
-            break
-
-    # Select position
-    pos = random.choice( operators[ bishop ] )
-
-    return ( bishop, pos[0], pos[1] )
+    return random.choice( operators )
 
 
-def choose_heuristics( operators ):
-    '''Choose with heuristics'''
-    flag = True
+def choose_heuristic( operators ):
+    '''Choose with heuristic'''
+    operator = operators[0]
+    h = operators[0][2]
 
-    for bishop, li in operators.items():
-        for data in li:
-            if flag:
-                operator = ( bishop, data[0], data[1] )
-                h = data[2]
-                flag = False
-            elif data[2] < h:
-                operator = ( bishop, data[0], data[1] )
-                h = data[2]
+    for op in operators:
+        if op[2] < h:
+            operator = op
+            h = op[2]
 
     return operator
 
@@ -125,4 +127,4 @@ def choose( operators, mode ):
     elif mode == 1:
         return choose_random( operators )
     elif mode == 2:
-        return choose_heuristics( operators )
+        return choose_heuristic( operators )

@@ -14,9 +14,10 @@ def is_exist( pos ):
 def is_free( pos, state, bishop ):
     '''Is the position free on the chessboard?'''
     for i in range( 8 ):
-        if i != bishop:
-            if pos == ( state[0][i], state[1][i] ):
-                return False
+        if i == bishop:
+            continue
+        if pos == state[i]:
+            return False
     return True
 
 
@@ -28,7 +29,15 @@ def is_knock( pos, state, bishop ):
         r = range( 4 )
 
     for i in r:
-        if abs( state[0][i] - pos[0] ) == abs( state[1][i] - pos[1] ):
+        if abs( state[i][0] - pos[0] ) == abs( state[i][1] - pos[1] ):
             return True
 
     return False
+
+
+def is_goal( state, rows ):
+    '''Is the state goal?'''
+    for i in range( 8 ):
+        if state[i][0] != rows[i]:
+            return False
+    return True
