@@ -26,3 +26,18 @@ Operátor választás módja:
 - Billentyűzetről
 - Véletlenszerűen
 - Hegymászó módszerrel
+
+### Visszalépéses kereső
+
+Részletesebben: [Itt](backtrack/)
+
+Operátor választás módja:
+
+- Első választható operátor
+- Véletlenszerűen
+- Heurisztikus
+
+Módok:
+
+- Körfigyeléssel
+- Úthosszkorláttal

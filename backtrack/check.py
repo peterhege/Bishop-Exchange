@@ -41,3 +41,11 @@ def is_goal( state, rows ):
         if state[i][0] != rows[i]:
             return False
     return True
+
+
+def is_in( nodes, actual ):
+    for i in range( len( nodes ) ):
+        if actual != i and nodes[ actual ].state == nodes[ i ].state:
+            return True
+
+    return False

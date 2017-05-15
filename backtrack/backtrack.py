@@ -6,10 +6,12 @@ from check import is_exist
 from check import is_free
 from check import is_knock
 from check import is_goal
+from check import is_in
 from chooses import choose
 from chooses import choose_heuristic
 from chooses import choose_random
 from chooses import choose_mode
+from chooses import choose_check
 from chooses import heuristic
 from node import node
 
@@ -50,15 +52,14 @@ def applicable_operators( state, is_h=False ):
 
                 if is_h:
                     h = heuristic( use( state, [ i, new_pos ] ) )
-                    if h > heuristic( state ):
-                        continue
-
-                if is_h:
                     op = [ i, new_pos, h ]
                 else:
                     op = [ i, new_pos ]
 
                 operators.append( op )
+
+    if is_h:
+        operators = sorted( operators, key=lambda op: op[2] )
 
     return operators
 
@@ -97,18 +98,26 @@ def backtrack_search():
     progress = 0
     li = ['|','/','-','\\']
 
+    mode = choose_mode()
+    check = choose_check()
+
     nodes = []
 
     new_node = node()
     new_node.state = START
     new_node.parent = None
     new_node.operator = None
-    new_node.applicable = applicable_operators( new_node.state )
+    if mode==2:
+        new_node.applicable = applicable_operators( new_node.state, True )
+    else:
+        new_node.applicable = applicable_operators( new_node.state )
+    if check:
+        new_node.depth = 0
     nodes.append( new_node )
     actual = len( nodes ) - 1
 
     while True:
-        print( li[progress], end='\r' )
+        #print( li[progress], end='\r' )
 
         if actual == None:
             break
@@ -116,8 +125,13 @@ def backtrack_search():
         if is_goal( nodes[ actual ].state, GOAL_ROWS ):
             break
 
+        if not check and is_in( nodes, actual ):
+            actual = nodes[ actual ].parent
+        if check and nodes[ actual ].depth == check:
+            actual = nodes[ actual ].parent
+
         if len( nodes[ actual ].applicable ) != 0:
-            index = choose( nodes[ actual ].applicable )
+            index = choose( nodes[ actual ].applicable, mode )
             operator = nodes[ actual ].applicable[ index ]
             nodes[ actual ].pop_operator( index )
 
@@ -125,9 +139,16 @@ def backtrack_search():
             new_node.state = use( nodes[ actual ].state, operator )
             new_node.parent = actual
             new_node.operator = operator
-            new_node.applicable = applicable_operators( new_node.state )
+            if mode==2:
+                new_node.applicable = applicable_operators( new_node.state, True )
+            else:
+                new_node.applicable = applicable_operators( new_node.state )
+            if check:
+                new_node.depth = nodes[ actual ].depth + 1
             nodes.append( new_node )
             actual = len( nodes ) - 1
+
+            print( nodes[ actual ].get_state() )
         else:
             actual = nodes[ actual ].parent
 
@@ -142,8 +163,13 @@ def backtrack_search():
             f.write( '{i:2d}. {op}:\n{state}\n'.format( i=i, op=operators[i], state=states[i] ) )
 
         f.close()
+
+        print( "Megoldás: solution.txt" )
     else:
-        print( "Nincs megoldás" )
+        if check:
+            print( "Sikertelen keresés" )
+        else:
+            print( "Nincs megoldás" )
 
 
 def main():
