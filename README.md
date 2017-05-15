@@ -41,3 +41,19 @@ Módok:
 
 - Körfigyeléssel
 - Úthosszkorláttal
+
+### Szélességi és Mélységi kereső
+
+Részletesebben: [Itt](depth/)
+
+### Optimális kereső
+
+Részletesebben: [Itt](optimal/)
+
+### Best-First
+
+Részletesebben: [Itt](best_first/)
+
+### A algoritmus
+
+Részletesebben: [Itt](a_algorithm/)

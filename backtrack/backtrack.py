@@ -15,8 +15,6 @@ from chooses import choose_check
 from chooses import heuristic
 from node import node
 
-import sys
-
 # Start state
 START = [
     (1,1), (1,2), (1,3), (1,4), # White
@@ -95,8 +93,6 @@ def get_solution_states( nodes, index ):
 
 def backtrack_search():
     ''' Search algorithm '''
-    progress = 0
-    li = ['|','/','-','\\']
 
     mode = choose_mode()
     check = choose_check()
@@ -117,7 +113,6 @@ def backtrack_search():
     actual = len( nodes ) - 1
 
     while True:
-        #print( li[progress], end='\r' )
 
         if actual == None:
             break
@@ -151,8 +146,6 @@ def backtrack_search():
             print( nodes[ actual ].get_state() )
         else:
             actual = nodes[ actual ].parent
-
-        progress = ( progress + 1 ) % 4
 
     if actual != None:
         states = get_solution_states( nodes, actual )
