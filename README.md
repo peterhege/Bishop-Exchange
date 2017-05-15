@@ -19,7 +19,7 @@ Részletesen: [bishop-exchange.pdf](docs/bishop-exchange.pdf)
 
 ### Nem módosítható kereső
 
-Részletesebben: [brute-force](brute-force/)
+Részletesebben: [Itt](brute_force/)
 
 Operátor választás módja:
 
