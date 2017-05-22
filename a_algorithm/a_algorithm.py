@@ -60,6 +60,27 @@ def search( li, state, nodes ):
     return None
 
 
+def sorted_insert( opened, nodes, i, j, index ):
+    if len( opened ) == 0:
+        opened.append( index )
+        return
+
+    if i >= j:
+        opened.insert( j, index )
+        return
+
+    half = ( i + j ) // 2
+
+    if ( nodes[ opened[ half ] ].cost + nodes[ opened[ half ] ].heuristic ) == ( nodes[ index ].cost + nodes[ index ].heuristic ):
+        opened.insert( half, index )
+        return
+
+    if ( nodes[ opened[ half ] ].cost + nodes[ opened[ half ] ].heuristic ) > ( nodes[ index ].cost + nodes[ index ].heuristic ):
+        return sorted_insert( opened, nodes, i, half, index )
+    else:
+        return sorted_insert( opened, nodes, half+1, j, index )
+
+
 def extend( selected, opened, closed, nodes ):
     # way vectors
     v = [ 1, 1, -1, -1 ]
@@ -91,8 +112,8 @@ def extend( selected, opened, closed, nodes ):
                     new_node.cost = nodes[selected].cost + way_costs( op, nodes[selected].state )
                     new_node.heuristic = heuristic( state )
 
-                    opened.append( len( nodes ) )
                     nodes.append( new_node )
+                    sorted_insert( opened, nodes, 0, len( opened ), len( nodes ) - 1 )
                 else:
                     new_cost = nodes[selected].cost + way_costs( op, nodes[selected].state )
                     if o != None:
@@ -100,18 +121,23 @@ def extend( selected, opened, closed, nodes ):
                             nodes[o].parent = selected
                             nodes[o].operator = op
                             nodes[o].cost = new_cost
+
+                            index = opened.index( o )
+                            opened.pop( index )
+                            sorted_insert( opened, nodes, 0, len( opened ), o )
                     else:
                         if new_cost < nodes[c].cost:
                             nodes[c].parent = selected
                             nodes[c].operator = op
                             nodes[c].cost = new_cost
+
                             index = closed.index( c )
                             closed.pop( index )
-                            opened.append( c )
+                            sorted_insert( opened, nodes, 0, len( opened ), c )
 
 
-    index = opened.index( selected )
-    opened.pop( index )
+    #index = opened.index( selected )
+    #opened.pop( index )
     closed.append( selected )
 
 
@@ -181,10 +207,11 @@ def a_algorithm():
         if len( opened ) == 0:
             break
 
-        selected = choose_node( nodes, opened )
-        '''if step%500==0:
+        #selected = choose_node( nodes, opened )
+        selected = opened.pop(0)
+
+        '''if step==1000:
             write_nodes( opened, closed, nodes, step, selected )
-        if step==100000:
             exit(0)'''
         step += 1
 
