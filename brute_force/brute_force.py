@@ -12,6 +12,7 @@ from chooses import choose_random
 from chooses import choose_from_keyboard
 from chooses import choose_mode
 from chooses import heuristic
+import sys
 
 # Start state
 START = [
@@ -94,7 +95,10 @@ def brute_force_search():
 
     print_state( actual )
 
-    mode = choose_mode()
+    if len( sys.argv ) > 1:
+        mode = int( sys.argv[1] )
+    else:
+        mode = choose_mode()
 
     while True:
         print_state( actual )
