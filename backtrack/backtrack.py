@@ -14,6 +14,7 @@ from chooses import choose_mode
 from chooses import choose_check
 from chooses import heuristic
 from node import node
+import sys
 
 # Start state
 START = [
@@ -94,8 +95,12 @@ def get_solution_states( nodes, index ):
 def backtrack_search():
     ''' Search algorithm '''
 
-    mode = choose_mode()
-    check = choose_check()
+    if len( sys.argv ) <= 2:
+        mode = choose_mode()
+        check = choose_check()
+    else:
+        mode = int( sys.argv[1] )
+        check = int( sys.argv[2] )
 
     nodes = []
 
