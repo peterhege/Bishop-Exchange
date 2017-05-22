@@ -162,7 +162,7 @@ def optimal_search():
 
     step = 0
 
-    opened = deque([])
+    opened = []
     closed = []
     nodes = []
 
@@ -181,7 +181,7 @@ def optimal_search():
         if len( opened ) == 0:
             break
 
-        selected = opened.popleft()
+        selected = opened.pop(0)
         
         '''if step == 1500:
             write_nodes( opened, closed, nodes, step, selected )
