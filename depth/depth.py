@@ -8,9 +8,10 @@ from check import is_knock
 from check import is_goal
 from check import is_in
 from chooses import choose_mode
-from chooses import heuristic
 from chooses import choose_node
+from collections import deque
 from node import node
+import sys
 
 # Start state
 START = [
@@ -95,17 +96,48 @@ def extend( selected, opened, closed, nodes ):
                     nodes.append( new_node )
                     opened.append( len( nodes ) - 1 )
 
-    index = opened.index( selected )
-    opened.pop( index )
+    #index = opened.index( selected )
+    #opened.pop( index )
     closed.append( selected )
+
+
+def write_nodes( opened, closed, nodes, step, selected ):
+    one_step = []
+    one_step.append( "{step}. lépés\n".format( step=step ) )
+    one_step.append( "\nKiválasztott:\n" )
+    one_step.append( '{node}\n'.format( node=str( nodes[selected] ) ) )
+    one_step.append( "\nNyíltak:\n" )
+    if opened:
+        for i in opened:
+            s = ''
+            if is_goal( nodes[ selected ].state, GOAL_ROWS ):
+                s = 'cél->'
+            one_step.append( '{s}{node}\n'.format( s=s, node=str( nodes[i] ) ) )
+
+    one_step.append( "\nZártak:\n" )
+    if closed:
+        for i in closed:
+            one_step.append( '{node}\n'.format( node=str( nodes[i] ) ) )
+
+
+    with open( "test/test{}.txt".format(step), "w" ) as f:
+        f.write( ''.join( one_step ) )
 
 
 def depth():
     ''' Search algorithm '''
+    step = 0
 
-    mode = choose_mode()
+    if( len( sys.argv ) == 1 ):
+        mode = choose_mode()
+    else:
+        mode = int( sys.argv[1] )
 
-    opened = []
+    if mode == 0:
+        opened = deque([])
+    elif mode == 1:
+        opened = []
+
     closed = []
     nodes = []
 
@@ -122,7 +154,15 @@ def depth():
         if len( opened ) == 0:
             break
 
-        selected = choose_node( nodes, opened, mode )
+        if mode == 0:
+            selected = opened.popleft()
+        elif mode == 1:
+            selected = opened.pop()
+
+        '''if step == 500:
+            write_nodes( opened, closed, nodes, step, selected )
+            exit(0)
+        step += 1'''
 
         print( nodes[ selected ].get_state() )
 
