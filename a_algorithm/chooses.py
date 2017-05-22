@@ -4,14 +4,49 @@ import random
 from check import is_white
 
 
+def is_knock( pos1, pos2 ):
+    if abs( pos1[0] - pos2[0] ) == abs( pos1[1] - pos2[1] ):
+        return True
+
+    return False
+
+
 def heuristic( state ):
     '''Heuristic function'''
     h = 0
     h += heuristic_distance( state )
-    h += heuristic_distance2( state )
+    #h += heuristic_distance2( state )
     #h += heuristic_wrong( state )
     #h += heuristic_wrong2( state )
+    h += heuristic_corner( state )
+    h += heuristic_knocked( state )
     
+    return h
+
+
+def heuristic_corner( state ):
+    h = 0
+    if ( state[0] == (4,4) and state[2] == (5,3) ) or ( state[0] == (5,3) and state[2] == (4,4) ):
+        h += 2
+    if ( state[1] == (4,1) and state[3] == (5,2) ) or ( state[1] == (5,2) and state[3] == (4,1) ):
+        h += 2
+    if ( state[4] == (2,4) and state[6] == (1,3) ) or ( state[4] == (1,3) and state[6] == (2,4) ):
+        h += 2
+    if ( state[5] == (2,1) and state[7] == (1,2) ) or ( state[5] == (1,2) and state[7] == (2,1) ):
+        h += 2
+
+    return h
+
+
+def heuristic_knocked( state ):
+    h = 0
+    for i in range( 8 ):
+        for j in range( 1, 4+1 ):
+            if is_white( i ) and is_knock( (5,j), state[i] ):
+                h += 1
+            if not is_white( i ) and is_knock( (1,j), state[i] ):
+                h += 1
+
     return h
 
 
@@ -99,7 +134,7 @@ def choose_node( nodes, opened ):
     index = opened[0]
 
     for i in opened:
-        if nodes[i].heuristic < nodes[index].heuristic:
+        if ( nodes[i].cost + nodes[i].heuristic ) < ( nodes[index].cost + nodes[index].heuristic):
             index = i
 
     return index

@@ -99,7 +99,7 @@ def choose_node( nodes, opened ):
     index = opened[0]
 
     for i in opened:
-        if ( nodes[i].cost + nodes[i].heuristic ) < ( nodes[index].cost + nodes[index].heuristic):
+        if nodes[i].cost < nodes[index].cost:
             index = i
 
     return index

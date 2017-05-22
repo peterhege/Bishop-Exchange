@@ -4,7 +4,6 @@ class node:
     state = []
     parent = None
     operator = None
-    applicable = []
     cost = 0
     heuristic = 0
 
@@ -36,4 +35,4 @@ class node:
 
 
     def __str__( self ):
-        return str( ( self.state, self.parent, self.operator, self.applicable ) )
+        return str( ( self.state, self.parent, self.operator, self.cost, self.heuristic, self.cost + self.heuristic ) )

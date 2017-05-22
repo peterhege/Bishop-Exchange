@@ -34,24 +34,22 @@ def use( state, operator ):
     return new_state
 
 
-def get_solution_operators( nodes, index ):
-    operators = []
+def get_solution( nodes, index, li ):
+    solution = []
 
     while index != None:
-        operators.append( str(nodes[ index ].operator) )
+        data = []
+        if 'op' in li:
+            data.append( 'operator: {op}'.format( op=nodes[ index ].operator ) )
+        if 'he' in li:
+            data.append( 'h(state)={he}'.format( he=nodes[ index ].heuristic ) )
+        if 'co' in li:
+            data.append( 'cost={co}'.format( co=nodes[ index ].cost ) )
+
+        solution.append( '{data}:\n{state}\n'.format( data=', '.join( data ), state=nodes[ index ].get_state() ) )
         index = nodes[ index ].parent
 
-    return operators[::-1]
-
-
-def get_solution_states( nodes, index ):
-    states = []
-
-    while index != None:
-        states.append( nodes[ index ].get_state() )
-        index = nodes[ index ].parent
-
-    return states[::-1]
+    return solution[::-1]
 
 
 def search( li, state, nodes ):
@@ -62,7 +60,13 @@ def search( li, state, nodes ):
     return None
 
 def way_costs( op, state ):
-    return abs( state[ op[0] ][0] - op[1][0] )
+    step = abs( state[ op[0] ][0] - op[1][0] )
+    if is_white( op[0] ) and op[1][0] < state[ op[0] ][0]:
+        step *= 2
+    elif not is_white( op[0] ) and op[1][0] > state[ op[0] ][0]:
+        step *= 2
+
+    return step
 
 
 def extend( selected, opened, closed, nodes ):
@@ -95,8 +99,8 @@ def extend( selected, opened, closed, nodes ):
                     new_node.operator = op
                     new_node.cost = nodes[selected].cost + way_costs( op, nodes[selected].state )
 
+                    opened.append( len( nodes ) )
                     nodes.append( new_node )
-                    opened.append( len( nodes ) - 1 )
                 elif o != None:
                     new_cost = nodes[selected].cost + way_costs( op, nodes[selected].state )
                     if new_cost < nodes[o].cost:
@@ -109,7 +113,7 @@ def extend( selected, opened, closed, nodes ):
     closed.append( selected )
 
 
-def optimal():
+def optimal_search():
     ''' Search algorithm '''
 
     opened = []
@@ -139,14 +143,11 @@ def optimal():
         extend( selected, opened, closed, nodes  )
 
     if len( opened ) != 0:
-        states = get_solution_states( nodes, selected )
-        operators = get_solution_operators( nodes, selected )
+        solution = get_solution( nodes, selected, [ 'op', 'he', 'co' ] )
 
-        f = open( 'solution.txt', 'w' )
-        for i in range( len(states) ):
-            f.write( '{i:2d}. {op}:\n{state}\n'.format( i=i, op=operators[i], state=states[i] ) )
-
-        f.close()
+        with open( 'solution.txt', 'w' ) as f:
+            for i in range( len(solution) ):
+                f.write( '{i:2d}. {node}'.format( i=i, node=solution[i] ) )
 
         print( "Megoldás: solution.txt" )
     else:
@@ -154,7 +155,7 @@ def optimal():
 
 
 def main():
-    optimal()
+    optimal_search()
 
 ##############################################################################
 

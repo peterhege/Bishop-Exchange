@@ -6,6 +6,7 @@ class node:
     operator = None
     applicable = []
     cost = 0
+    heuristic = 0
 
 
     def pop_operator( self, index ):

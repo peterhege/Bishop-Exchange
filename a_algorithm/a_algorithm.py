@@ -34,24 +34,22 @@ def use( state, operator ):
     return new_state
 
 
-def get_solution_operators( nodes, index ):
-    operators = []
+def get_solution( nodes, index, li ):
+    solution = []
 
     while index != None:
-        operators.append( str(nodes[ index ].operator) )
+        data = []
+        if 'op' in li:
+            data.append( 'operator: {op}'.format( op=nodes[ index ].operator ) )
+        if 'he' in li:
+            data.append( 'h(state)={he}'.format( he=nodes[ index ].heuristic ) )
+        if 'co' in li:
+            data.append( 'cost={co}'.format( co=nodes[ index ].cost ) )
+
+        solution.append( '{data}:\n{state}\n'.format( data=', '.join( data ), state=nodes[ index ].get_state() ) )
         index = nodes[ index ].parent
 
-    return operators[::-1]
-
-
-def get_solution_states( nodes, index ):
-    states = []
-
-    while index != None:
-        states.append( nodes[ index ].get_state() )
-        index = nodes[ index ].parent
-
-    return states[::-1]
+    return solution[::-1]
 
 
 def search( li, state, nodes ):
@@ -90,11 +88,11 @@ def extend( selected, opened, closed, nodes ):
                     new_node.state = state
                     new_node.parent = selected
                     new_node.operator = op
-                    new_node.heuristic = heuristic( state )
                     new_node.cost = nodes[selected].cost + way_costs( op, nodes[selected].state )
+                    new_node.heuristic = heuristic( state )
 
+                    opened.append( len( nodes ) )
                     nodes.append( new_node )
-                    opened.append( len( nodes ) - 1 )
                 else:
                     new_cost = nodes[selected].cost + way_costs( op, nodes[selected].state )
                     if o != None:
@@ -118,11 +116,50 @@ def extend( selected, opened, closed, nodes ):
 
 
 def way_costs( op, state ):
-    return abs( state[ op[0] ][0] - op[1][0] )
+    step = abs( state[ op[0] ][0] - op[1][0] )
+    if is_white( op[0] ) and op[1][0] < state[ op[0] ][0]:
+        step *= 2
+    elif not is_white( op[0] ) and op[1][0] > state[ op[0] ][0]:
+        step *= 2
+
+    return step
+
+
+def write_nodes( opened, closed, nodes, step, selected ):
+    one_step = []
+    one_step.append( "{step}. lépés\n".format( step=step ) )
+    one_step.append( "\nNyíltak:\n" )
+    if opened:
+        for i in opened:
+            predicted_cost = 0
+            real_cost = 0
+            if nodes[i].parent:
+                predicted_cost = nodes[ nodes[i].parent ].heuristic - nodes[i].heuristic
+                real_cost = nodes[i].cost - nodes[ nodes[i].parent ].cost
+            s = ''
+            if i == selected:
+                s = '->'
+            elif is_goal( nodes[ selected ].state, GOAL_ROWS ):
+                s = 'cél->'
+            one_step.append( '{s}{node} {a}\n'.format( s=s, node=str( nodes[i] ), a=predicted_cost<=real_cost ) )
+
+    one_step.append( "\nZártak:\n" )
+    if closed:
+        for i in closed:
+            predicted_cost = 0
+            if nodes[i].parent:
+                predicted_cost = nodes[ nodes[i].parent ].heuristic - nodes[i].heuristic
+                real_cost = nodes[i].cost - nodes[ nodes[i].parent ].cost
+            one_step.append( '{node} {a}\n'.format( node=str( nodes[i] ), a=predicted_cost<=real_cost ) )
+
+
+    with open( "test/test{}.txt".format(step), "w" ) as f:
+        f.write( ''.join( one_step ) )
 
 
 def a_algorithm():
     ''' Search algorithm '''
+    step = 0
 
     opened = []
     closed = []
@@ -132,37 +169,48 @@ def a_algorithm():
     new_node.state = START
     new_node.parent = None
     new_node.operator = None
-    new_node.heuristic = heuristic( START )
     new_node.cost = 0
+    new_node.heuristic = heuristic( START )
     nodes.append( new_node )
 
     opened.append( 0 )
 
     while True:
+        print( "[{}{}. lépés] Keresés folyamatban...".format( (10-len(str(step)))*'-', step ), end='\r' )
+
         if len( opened ) == 0:
             break
 
         selected = choose_node( nodes, opened )
+        '''if step%500==0:
+            write_nodes( opened, closed, nodes, step, selected )
+        if step==100000:
+            exit(0)'''
+        step += 1
 
-        print( nodes[ selected ].get_state() )
+        #print( nodes[ selected ].get_state() )
 
         if is_goal( nodes[ selected ].state, GOAL_ROWS ):
             break
 
         extend( selected, opened, closed, nodes  )
 
+    print('')
+
     if len( opened ) != 0:
-        states = get_solution_states( nodes, selected )
-        operators = get_solution_operators( nodes, selected )
+        solution = get_solution( nodes, selected, [ 'op', 'he', 'co' ] )
 
-        f = open( 'solution.txt', 'w' )
-        for i in range( len(states) ):
-            f.write( '{i:2d}. {op}:\n{state}\n'.format( i=i, op=operators[i], state=states[i] ) )
-
-        f.close()
+        with open( 'solution.txt', 'w' ) as f:
+            for i in range( len(solution) ):
+                f.write( '{i:2d}. {node}'.format( i=i, node=solution[i] ) )
 
         print( "Megoldás: solution.txt" )
     else:
+        solution = get_solution( nodes, selected, [ 'op', 'he', 'co' ] )
+
+        with open( 'solution.txt', 'w' ) as f:
+            for i in range( len(solution) ):
+                f.write( '{i:2d}. {node}'.format( i=i, node=solution[i] ) )
         print( "Nincs megoldás" )
 
 

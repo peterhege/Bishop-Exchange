@@ -121,9 +121,9 @@ def backtrack_search():
             break
 
         if not check and is_in( nodes, actual ):
-            actual = nodes[ actual ].parent
+            actual = nodes.pop(actual).parent
         if check and nodes[ actual ].depth == check:
-            actual = nodes[ actual ].parent
+            actual = nodes.pop(actual).parent
 
         if len( nodes[ actual ].applicable ) != 0:
             index = choose( nodes[ actual ].applicable, mode )
@@ -145,7 +145,7 @@ def backtrack_search():
 
             print( nodes[ actual ].get_state() )
         else:
-            actual = nodes[ actual ].parent
+            actual = nodes.pop(actual).parent
 
     if actual != None:
         states = get_solution_states( nodes, actual )
