@@ -36,4 +36,4 @@ class node:
 
 
     def __str__( self ):
-        return str( ( self.state, self.parent, self.operator, self.applicable ) )
+        return str( ( self.state, self.parent, self.operator, self.cost ) )
