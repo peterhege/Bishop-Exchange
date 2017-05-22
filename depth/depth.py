@@ -151,6 +151,8 @@ def depth():
     opened.append( 0 )
 
     while True:
+        print( "[{}{}. lépés] Keresés folyamatban...".format( (10-len(str(step)))*'-', step ), end='\r' )
+
         if len( opened ) == 0:
             break
 
@@ -161,10 +163,8 @@ def depth():
 
         '''if step == 500:
             write_nodes( opened, closed, nodes, step, selected )
-            exit(0)
-        step += 1'''
-
-        print( nodes[ selected ].get_state() )
+            exit(0)'''
+        step += 1
 
         if is_goal( nodes[ selected ].state, GOAL_ROWS ):
             break

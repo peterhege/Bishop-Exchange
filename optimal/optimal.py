@@ -118,7 +118,6 @@ def extend( selected, opened, closed, nodes ):
                     new_node.operator = op
                     new_node.cost = nodes[selected].cost + way_costs( op, nodes[selected].state )
 
-                    #opened.append( len( nodes ) )
                     nodes.append( new_node )
                     sorted_insert( opened, nodes, 0, len( opened ), len( nodes ) - 1 )
                 elif o != None:
@@ -182,11 +181,11 @@ def optimal_search():
         if len( opened ) == 0:
             break
 
-        #selected = choose_node( nodes, opened )
         selected = opened.popleft()
-        if step == 1500:
+        
+        '''if step == 1500:
             write_nodes( opened, closed, nodes, step, selected )
-            exit(0)
+            exit(0)'''
         step += 1
 
         if is_goal( nodes[ selected ].state, GOAL_ROWS ):

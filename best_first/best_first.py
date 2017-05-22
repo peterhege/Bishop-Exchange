@@ -11,6 +11,7 @@ from chooses import choose_mode
 from chooses import heuristic
 from chooses import choose_node
 from node import node
+from collections import deque
 
 # Start state
 START = [
@@ -62,6 +63,27 @@ def search( li, state, nodes ):
     return None
 
 
+def sorted_insert( opened, nodes, i, j, index ):
+    if len( opened ) == 0:
+        opened.append( index )
+        return
+
+    if i >= j:
+        opened.insert( j, index )
+        return
+
+    half = ( i + j ) // 2
+
+    if nodes[ opened[ half ] ].heuristic == nodes[ index ].heuristic:
+        opened.insert( half, index )
+        return
+
+    if nodes[ opened[ half ] ].heuristic > nodes[ index ].heuristic:
+        return sorted_insert( opened, nodes, i, half, index )
+    if nodes[ opened[ half ] ].heuristic < nodes[ index ].heuristic:
+        return sorted_insert( opened, nodes, half+1, j, index )
+
+
 def extend( selected, opened, closed, nodes ):
     # way vectors
     v = [ 1, 1, -1, -1 ]
@@ -93,17 +115,40 @@ def extend( selected, opened, closed, nodes ):
                     new_node.heuristic = heuristic( state )
 
                     nodes.append( new_node )
-                    opened.append( len( nodes ) - 1 )
+                    sorted_insert( opened, nodes, 0, len( opened ), len( nodes ) - 1 )
 
-    index = opened.index( selected )
-    opened.pop( index )
     closed.append( selected )
+
+
+def write_nodes( opened, closed, nodes, step, selected ):
+    one_step = []
+    one_step.append( "{step}. lépés\n".format( step=step ) )
+    one_step.append( "\nKiválasztott:\n" )
+    one_step.append( '{node}\n'.format( node=str( nodes[selected] ) ) )
+    one_step.append( "\nNyíltak:\n" )
+    if opened:
+        for i in opened:
+            s = ''
+            if is_goal( nodes[ selected ].state, GOAL_ROWS ):
+                s = 'cél->'
+            one_step.append( '{s}{node}\n'.format( s=s, node=str( nodes[i] ) ) )
+
+    one_step.append( "\nZártak:\n" )
+    if closed:
+        for i in closed:
+            one_step.append( '{node}\n'.format( node=str( nodes[i] ) ) )
+
+
+    with open( "test/test{}.txt".format(step), "w" ) as f:
+        f.write( ''.join( one_step ) )
 
 
 def best_first():
     ''' Search algorithm '''
 
-    opened = []
+    step = 0
+
+    opened = deque([])
     closed = []
     nodes = []
 
@@ -117,12 +162,17 @@ def best_first():
     opened.append( 0 )
 
     while True:
+        print( "[{}{}. lépés] Keresés folyamatban...".format( (10-len(str(step)))*'-', step ), end='\r' )
+
         if len( opened ) == 0:
             break
 
-        selected = choose_node( nodes, opened )
-
-        print( nodes[ selected ].get_state() )
+        selected = opened.popleft()
+        
+        '''if step == 2000:
+            write_nodes( opened, closed, nodes, step, selected )
+            exit(0)'''
+        step += 1
 
         if is_goal( nodes[ selected ].state, GOAL_ROWS ):
             break
